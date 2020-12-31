@@ -1,3 +1,3 @@
 # Tabs
 
-[Preview](https://oufcena.github.io/tabs/)
+[Preview](https://oufcena.github.io/tabs/tabs.html)
