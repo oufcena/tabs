@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<script>
+function tabs(tabs, colors) {
+  var border, CSS, JS, HTML='', JSX=document.body;
+  
+  border = `1px solid #ccc`;
+  CSS = [
+    `
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #f1f1f1;
+      border: ${border};
+      border-bottom: none;
+    `,
+    `
+      float: left;
+      padding: 14px 16px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    `,
+    `
+      padding: 6px 12px;
+      border: ${border};
+      border-top: none;
+    `,
+    `
+      float: right;
+      cursor: pointer;
+      font-size: 28px;
+    `,
+    ``
+  ];
+  
+  JS = [
+    `
+      this.parentElement.style.cssText += \`
+        border-bottom: none;
+      \`;
+      
+      var index = 
+      [...this.parentElement.children]
+      .indexOf(this);
+
+      [...this.parentElement.nextElementSibling.children]
+      .forEach( (v, i) => 
+      i==index ? v.style.display = 'block' 
+      : v.style.display = 'none');
+    `,
+    `
+      onclick="
+      var content, tab 
+      content = this.parentElement;
+      content.style.display='none';
+     
+      tab = content.parentElement.previousElementSibling;
+      tab.style.cssText += \`
+        border: ${border};
+      \`;
+      "
+      onmouseover="
+        this.style.cssText += \`
+          color: blue;
+        \`;
+      "
+      onmouseout="
+        this.style.cssText += \`
+          color: #000;
+        \`;
+      "
+    `,
+    ``
+  ];
+
+  /* ------------------------------------------ */
+  if(!tabs) {
+    tabs = [
+      {
+        name: 'London', 
+        content: `
+        <div>
+          <h3>London</h3>
+          <p>London is the capital city of England.</p>
+        </div>`
+      },
+      {
+        name: 'Paris',
+        content: `
+        <div>
+          <h3>Paris</h3>
+          <p>Paris is the capital of France.</p>
+        </div>`
+      },
+      {
+        name: 'Tokyo',
+        content: `
+        <div>      
+          <h3>Tokyo</h3>
+          <p>Tokyo is the capital of Japan.</p>
+        </div>`
+      }
+    ];
+  }
+  
+  if(!colors) {
+    colors = {
+      parent: {
+        bg: ['red', 'green', 'yellow'], 
+        bgH: [''],
+        c: [''], 
+        cH: ['']
+      },
+      child: {
+        bg: ['red', 'green', 'yellow'], 
+        bgH: [''],
+        c: [''], 
+        cH: ['']
+      }
+    };
+  }
+  
+  /* ------------------------------------------ */
+  tabs = tabs.map( (v, i) => 
+  i==0 ? v = {
+    name: v.name,
+    content: v.content
+              .replace('div', `div style="${CSS[2]}
+              background:${colors.child.bg[0]};" 
+              class="fade"`)
+  } : v = {
+    name: v.name,
+    content: v.content
+              .replace('div', 
+              `div style="${CSS[2]}display:none;
+              background:${colors.child.bg[i]};" 
+              class="fade"`)
+  });
+
+  tabs = tabs.map(v => 
+  v = {
+    name: v.name,
+    content: v.content
+              .replace('>', 
+              `><span 
+              style="${CSS[3]}" ${JS[1]}>&times</span>`)
+  });
+
+  /* ------------------------------------------ */
+  HTML += `
+  <style>
+  .fade {
+    animation: fade 1s;
+  }
+  @keyframes fade {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+  </style>
+  `;
+  HTML += '<section>';
+  
+  HTML += `<ul style="${CSS[0]}">`;
+  
+  HTML += tabs.map( (v, i) => 
+  `<li style="${CSS[1]} 
+  background:${colors.parent.bg[i]};" 
+  onclick="${JS[0]}">${v.name}</li>`).join('');
+  HTML += '</ul>';
+  
+  HTML += '<div>';
+  HTML += tabs.map(v => v.content).join('');
+  HTML += '</div>';
+
+  HTML += '</section>';
+
+  JSX.innerHTML += HTML;
+} 
+tabs();
+</script>
+
+</body>
+</html>
